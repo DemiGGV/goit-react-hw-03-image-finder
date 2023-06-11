@@ -41,6 +41,7 @@ export class App extends Component {
         if (!resp.hits.length) {
           this.handleChangeState('idle');
           toast.warn('There nothing inside!', toastOpts);
+          this.setState({ visibleBtn: false });
           return;
         }
         const fetchArr = mappingArray(resp.hits);
