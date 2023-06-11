@@ -57,7 +57,7 @@ export class ImageGalleryItem extends Component {
     const { isModalOpen } = this.state;
 
     return (
-      <ImageGalleryItemS>
+      <ImageGalleryItemS style={{ height: '260px' }}>
         <ImageGalleryItemImage
           src={image.webformatURL}
           alt={image.tags}
@@ -65,11 +65,11 @@ export class ImageGalleryItem extends Component {
         />
         <ReactModal
           isOpen={isModalOpen}
-          onAfterOpen={() => disableBodyScroll('document')}
-          onAfterClose={() => enableBodyScroll('document')}
-          onRequestClose={this.handleCloseModal}
-          style={customStyles}
           contentLabel="Modal window"
+          onRequestClose={this.handleCloseModal}
+          onAfterOpen={() => disableBodyScroll(document)}
+          onAfterClose={() => enableBodyScroll(document)}
+          style={customStyles}
         >
           <Modal image={image.largeImageURL} />
         </ReactModal>

@@ -27,55 +27,69 @@ export class App extends Component {
 
   componentDidUpdate(_, pState) {
     const { querry, page } = this.state;
-    if (querry === pState.querry) return;
+    if (querry === pState.querry) {
+      window.scrollBy({
+        top: 280 * 3,
+        behavior: 'smooth',
+      });
+      return;
+    }
     this.handleChangeState('loading');
     this.setState({ page: 1 });
-    fetchGetImgs(querry, page)
-      .then(resp => {
-        const fetchArr = mappingArray(resp.hits);
-        if (Number(resp.totalHits) > 12) {
-          this.setState({ visibleBtn: true });
-        } else this.setState({ visibleBtn: false });
-        this.setState({ imgArr: [...fetchArr] });
-        this.handleChangeState('loaded');
-      })
-      .catch(function (error) {
-        this.handleChangeState('error');
-        this.setState({ errorMessage: error });
-      });
+    try {
+      fetchGetImgs(querry, page)
+        .then(resp => {
+          const fetchArr = mappingArray(resp.hits);
+          if (Number(resp.totalHits) > 12) {
+            this.setState({ visibleBtn: true });
+          } else this.setState({ visibleBtn: false });
+          this.setState({ imgArr: [...fetchArr] });
+          this.handleChangeState('loaded');
+        })
+        .catch(function (error) {
+          throw new Error(error);
+        });
+    } catch (error) {
+      this.handleChangeState('error');
+      this.setState({ errorMessage: error });
+    }
   }
 
-  newFetchImages = () => {
+  newFetchImages = async () => {
     this.handleChangeState('loading');
     const { querry, page, imgArr } = this.state;
     const currPage = page + 1;
     this.setState({
       page: currPage,
     });
-    fetchGetImgs(querry, currPage)
-      .then(resp => {
-        const fetchArr = mappingArray(resp.hits);
-        if (Number(resp.totalHits) > fetchArr.length + imgArr.length) {
-          this.setState({ visibleBtn: true });
-        } else this.setState({ visibleBtn: false });
-        this.setState(prevState => ({
-          imgArr: [...prevState.imgArr, ...fetchArr],
-        }));
-        this.handleChangeState('loaded');
-      })
-      .catch(function (error) {
-        this.handleChangeState('error');
-        this.setState({ errorMessage: error });
-      });
+    try {
+      await fetchGetImgs(querry, currPage)
+        .then(resp => {
+          const fetchArr = mappingArray(resp.hits);
+          if (Number(resp.totalHits) > fetchArr.length + imgArr.length) {
+            this.setState({ visibleBtn: true });
+          } else this.setState({ visibleBtn: false });
+          this.setState(prevState => ({
+            imgArr: [...prevState.imgArr, ...fetchArr],
+          }));
+          this.handleChangeState('loaded');
+        })
+        .catch(function (error) {
+          throw new Error(error);
+        });
+    } catch (error) {
+      this.handleChangeState('error');
+      this.setState({ errorMessage: error });
+    }
   };
 
   render() {
     const { status, errorMessage, imgArr, visibleBtn } = this.state;
-
     return (
       <Section>
         <Searchbar onQuerry={this.handleFormQuerry} />
-        {status === 'loaded' && <ImageGallery imgArr={imgArr} />}
+        <ImageGallery imgArr={imgArr} />
+        {/* {status === 'loaded' &&} */}
         {status === 'loading' && <Loader />}
         {status === 'error' && <p>{errorMessage}</p>}
         {visibleBtn && <Button onChange={this.newFetchImages} />}
