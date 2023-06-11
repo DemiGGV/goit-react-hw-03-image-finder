@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import {
   disableBodyScroll,
@@ -25,12 +26,13 @@ const customStyles = {
     zIndex: 1200,
   },
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
+    maxWidth: 'calc(100vw - 48px)',
+    maxHeight: 'calc(100vh - 24px)',
+    padding: 5,
+    border: 'none',
+    position: 'static',
+    borderRadius: 0,
+    overflow: 'hidden',
   },
 };
 ReactModal.setAppElement('#root');
@@ -71,9 +73,13 @@ export class ImageGalleryItem extends Component {
           onAfterClose={() => enableBodyScroll(document)}
           style={customStyles}
         >
-          <Modal image={image.largeImageURL} />
+          <Modal image={image.largeImageURL} tags={image.tags} />
         </ReactModal>
       </ImageGalleryItemS>
     );
   }
 }
+
+ImageGalleryItem.propTypes = {
+  image: PropTypes.object.isRequired,
+};

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import {
   SearchForm,
@@ -11,9 +12,10 @@ export const Searchbar = props => {
   const handleSubmit = (val, { resetForm }) => {
     if (val.querry.trim() === '') {
       alert('Input your querry!');
+      resetForm();
       return;
     }
-    props.onQuerry(val);
+    props.onQuerry(val.querry.trim());
     resetForm();
   };
 
@@ -40,4 +42,8 @@ export const Searchbar = props => {
       </Formik>
     </SearchHead>
   );
+};
+
+Searchbar.propTypes = {
+  onQuerry: PropTypes.func.isRequired,
 };

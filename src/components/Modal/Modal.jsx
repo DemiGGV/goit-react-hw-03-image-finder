@@ -1,10 +1,10 @@
-import { Component } from 'react';
+import PropTypes from 'prop-types';
 
-export class Modal extends Component {
-  componentDidMount = () => {};
+export const Modal = ({ image, tags }) => {
+  return <img src={image} alt={tags} />;
+};
 
-  render() {
-    const { image } = this.props;
-    return <img src={image} alt={image.tags} />;
-  }
-}
+Modal.propTypes = {
+  image: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
+};

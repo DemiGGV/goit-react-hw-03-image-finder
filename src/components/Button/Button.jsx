@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { ButtonS } from 'components/MainContainerCSS';
 
 export const Button = ({ onChange }) => (
@@ -5,3 +6,7 @@ export const Button = ({ onChange }) => (
     Load more
   </ButtonS>
 );
+
+Button.propTypes = {
+  onChange: PropTypes.func.isRequired,
+};
