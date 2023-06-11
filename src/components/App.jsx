@@ -1,65 +1,86 @@
 import { Component } from 'react';
-import { nanoid } from 'nanoid';
 import { GlobalStyle } from './GlobalStyle';
+import { Searchbar } from './Searchbar/Searchbar';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Section } from 'components/MainContainerCSS';
+import { Button } from './Button/Button';
+import { fetchGetImgs } from './ImageGallery/FetchEngine';
+import { mappingArray } from './ImageGallery/imgArrayFormatting';
+import { Loader } from './Loader/Loader';
 
 export class App extends Component {
   state = {
-    contacts: [
-      // { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      // { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      // { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      // { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: '',
+    querry: '',
+    page: 1,
+    imgArr: [],
+    visibleBtn: false,
+    status: 'idle',
   };
 
-  handleInputChange = evt => {
+  handleFormQuerry = ({ querry }) => {
+    this.setState({ querry });
+  };
+
+  handleChangeState = status => {
+    this.setState({ status });
+  };
+
+  componentDidUpdate(_, pState) {
+    const { querry, page } = this.state;
+    if (querry === pState.querry) return;
+    this.handleChangeState('loading');
+    this.setState({ page: 1 });
+    fetchGetImgs(querry, page)
+      .then(resp => {
+        const fetchArr = mappingArray(resp.hits);
+        if (Number(resp.totalHits) > 12) {
+          this.setState({ visibleBtn: true });
+        } else this.setState({ visibleBtn: false });
+        this.setState({ imgArr: [...fetchArr] });
+        this.handleChangeState('loaded');
+      })
+      .catch(function (error) {
+        this.handleChangeState('error');
+        this.setState({ errorMessage: error });
+      });
+  }
+
+  newFetchImages = () => {
+    this.handleChangeState('loading');
+    const { querry, page, imgArr } = this.state;
+    const currPage = page + 1;
     this.setState({
-      [evt.currentTarget.name]: evt.currentTarget.value.trim(),
+      page: currPage,
     });
-  };
-
-  handleOnSubmit = state => {
-    if (
-      this.state.contacts.find(
-        contact => contact.name.toLowerCase() === state.name.toLowerCase()
-      )
-    ) {
-      alert(`${state.name} is already in contacts!`);
-      return;
-    }
-    const contact = {
-      id: nanoid(),
-      name: state.name,
-      number: state.number,
-    };
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, contact],
-    }));
-  };
-
-  deleteEntries = idToDelete => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== idToDelete),
-    }));
+    fetchGetImgs(querry, currPage)
+      .then(resp => {
+        const fetchArr = mappingArray(resp.hits);
+        if (Number(resp.totalHits) > fetchArr.length + imgArr.length) {
+          this.setState({ visibleBtn: true });
+        } else this.setState({ visibleBtn: false });
+        this.setState(prevState => ({
+          imgArr: [...prevState.imgArr, ...fetchArr],
+        }));
+        this.handleChangeState('loaded');
+      })
+      .catch(function (error) {
+        this.handleChangeState('error');
+        this.setState({ errorMessage: error });
+      });
   };
 
   render() {
-    const { contacts, filter } = this.state;
-    const filteredContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
+    const { status, errorMessage, imgArr, visibleBtn } = this.state;
+
     return (
-      <div>
-        <h2>Phonebook</h2>
-        <form formSubmit={this.handleOnSubmit} />
-        <h2>Contacts</h2>
-        <div text={filter} onChange={this.handleInputChange} />
-        {!!filteredContacts.length && (
-          <div contacts={filteredContacts} onDelete={this.deleteEntries} />
-        )}
+      <Section>
+        <Searchbar onQuerry={this.handleFormQuerry} />
+        {status === 'loaded' && <ImageGallery imgArr={imgArr} />}
+        {status === 'loading' && <Loader />}
+        {status === 'error' && <p>{errorMessage}</p>}
+        {visibleBtn && <Button onChange={this.newFetchImages} />}
         <GlobalStyle />
-      </div>
+      </Section>
     );
   }
 }
