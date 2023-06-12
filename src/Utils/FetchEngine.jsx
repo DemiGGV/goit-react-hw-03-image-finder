@@ -9,7 +9,7 @@ export const fetchGetImgs = async (querry, page, controller) => {
     orientation: 'horizontal',
     safesearch: true,
     page: page,
-    per_page: 12,
+    per_page: 15,
   });
   const response = await axios.get(`${BASE_URL}?${params}`, {
     signal: controller.signal,

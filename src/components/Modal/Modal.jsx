@@ -39,7 +39,7 @@ export const Modal = ({ image, isOpenState, onChange }) => {
       onAfterClose={() => enableBodyScroll(document)}
       style={customStyles}
     >
-      <img src={image.largeImageURL} alt={image.tags} />
+      <img src={image.largeImageURL} alt={image.tags} loading="lazy" />
     </ReactModal>
   );
 };

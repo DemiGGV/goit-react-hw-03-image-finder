@@ -8,8 +8,8 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Section } from 'components/MainContainerCSS';
 import { Button } from './Button/Button';
-import { fetchGetImgs } from '../Utils/FetchEngine';
-import { mappingArray } from '../Utils/imgArrayFormatting';
+import { fetchGetImgs } from '../utils/FetchEngine';
+import { mappingArray } from '../utils/imgArrayFormatting';
 import { Modal } from './Modal/Modal';
 
 // Notification options

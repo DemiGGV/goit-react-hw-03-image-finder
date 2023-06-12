@@ -11,6 +11,7 @@ export const ImageGalleryItem = ({ image, onChange }) => {
       <ImageGalleryItemImage
         src={image.webformatURL}
         alt={image.tags}
+        loading="lazy"
         onClick={() => {
           onChange(image);
         }}
