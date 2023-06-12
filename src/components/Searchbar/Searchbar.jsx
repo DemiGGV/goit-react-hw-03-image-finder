@@ -10,11 +10,6 @@ import {
 
 export const Searchbar = props => {
   const handleSubmit = (val, { resetForm }) => {
-    if (val.querry.trim() === '') {
-      alert('Input your querry!');
-      resetForm();
-      return;
-    }
     props.onQuerry(val.querry.trim());
     resetForm();
   };

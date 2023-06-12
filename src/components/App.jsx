@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import ScrollToTop from 'react-scroll-to-top';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Loader } from './Loader/Loader';
@@ -66,7 +67,7 @@ export class App extends Component {
           () => {
             if (page !== 1)
               window.scrollBy({
-                top: 270 * 3,
+                top: 280 * 3,
                 behavior: 'smooth',
               });
           }
@@ -85,6 +86,10 @@ export class App extends Component {
   };
 
   handleFormQuerry = querry => {
+    if (querry === '') {
+      toast.error('Input your querry!', toastOpts);
+      return;
+    }
     if (querry === this.state.querry) return;
     this.setState({
       querry,
@@ -118,6 +123,11 @@ export class App extends Component {
 
     return (
       <Section>
+        <ScrollToTop
+          smooth
+          top={100}
+          component={<p style={{ color: 'blue' }}>UP</p>}
+        />
         <Searchbar onQuerry={this.handleFormQuerry} />
         <ImageGallery imgArr={imgArr} modalToggle={this.handleModalToggle} />
         {status === 'loading' && <Loader />}
