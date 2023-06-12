@@ -26,7 +26,6 @@ ol {
 html {
   box-sizing: border-box;
   width: 100vw;
-  overflow-x: hidden;
 }
 body {
   margin: 0;

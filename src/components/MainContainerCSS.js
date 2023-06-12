@@ -10,6 +10,7 @@ export const Section = styled.section`
   grid-gap: 10px;
   padding-bottom: 24px;
   align-items: center;
+  overflow-x: hidden;
 `;
 
 // // /*

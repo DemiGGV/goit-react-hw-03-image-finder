@@ -9,6 +9,7 @@ import { Section } from 'components/MainContainerCSS';
 import { Button } from './Button/Button';
 import { fetchGetImgs } from '../Utils/FetchEngine';
 import { mappingArray } from '../Utils/imgArrayFormatting';
+import { Modal } from './Modal/Modal';
 
 // Notification options
 const toastOpts = {
@@ -30,7 +31,14 @@ export class App extends Component {
     errorMessage: null,
     visibleBtn: false,
     status: 'idle',
+    isOpenModal: false,
+    modalImage: {},
+    targetElement: null,
   };
+
+  componentDidMount() {
+    this.targetElement = document.querySelector('#root');
+  }
 
   async componentDidUpdate(_, pState) {
     const { querry, page, imgArr } = this.state;
@@ -71,6 +79,7 @@ export class App extends Component {
     }
   }
 
+  //state machine engine
   handleChangeState = status => {
     this.setState({ status });
   };
@@ -84,6 +93,13 @@ export class App extends Component {
     });
   };
 
+  handleModalToggle = modalImage => {
+    this.setState({ modalImage });
+    this.setState(pState => ({
+      isOpenModal: !pState.isOpenModal,
+    }));
+  };
+
   newFetchImages = () => {
     this.setState({
       page: this.state.page + 1,
@@ -91,14 +107,27 @@ export class App extends Component {
   };
 
   render() {
-    const { status, errorMessage, imgArr, visibleBtn } = this.state;
+    const {
+      status,
+      errorMessage,
+      imgArr,
+      visibleBtn,
+      modalImage,
+      isOpenModal,
+    } = this.state;
+
     return (
       <Section>
         <Searchbar onQuerry={this.handleFormQuerry} />
-        <ImageGallery imgArr={imgArr} />
+        <ImageGallery imgArr={imgArr} modalToggle={this.handleModalToggle} />
         {status === 'loading' && <Loader />}
         {status === 'error' && toast.error(errorMessage, toastOpts)}
         {visibleBtn && <Button onChange={this.newFetchImages} />}
+        <Modal
+          image={modalImage}
+          isOpenState={isOpenModal}
+          onChange={this.handleModalToggle}
+        />
         <ToastContainer />
         <GlobalStyle />
       </Section>
