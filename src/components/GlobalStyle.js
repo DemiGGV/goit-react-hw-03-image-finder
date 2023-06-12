@@ -36,7 +36,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
-  margin-top: 20px;
 }
 img {
   display: block;
