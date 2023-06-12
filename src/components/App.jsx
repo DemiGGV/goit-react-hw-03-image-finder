@@ -25,6 +25,8 @@ const toastOpts = {
 };
 
 export class App extends Component {
+  abortController;
+
   state = {
     querry: '',
     page: 1,
@@ -34,19 +36,19 @@ export class App extends Component {
     status: 'idle',
     isOpenModal: false,
     modalImage: {},
-    targetElement: null,
   };
-
-  componentDidMount() {
-    this.targetElement = document.querySelector('#root');
-  }
 
   async componentDidUpdate(_, pState) {
     const { querry, page, imgArr } = this.state;
     if (querry !== pState.querry || page !== pState.page) {
+      if (this.abortController) {
+        this.abortController.abort();
+      }
+      this.abortController = new AbortController();
       this.handleChangeState('loading');
+      this.setState({ errorMessage: null });
       try {
-        const resp = await fetchGetImgs(querry, page);
+        const resp = await fetchGetImgs(querry, page, this.abortController);
         if (!resp.hits.length) {
           this.handleChangeState('idle');
           toast.warn('There nothing inside!', toastOpts);
@@ -74,8 +76,12 @@ export class App extends Component {
         );
         this.handleChangeState('idle');
       } catch (error) {
-        this.handleChangeState('error');
-        this.setState({ errorMessage: 'Bad request! Try reloading the page.' });
+        if (error.code !== 'ERR_CANCELED') {
+          this.handleChangeState('error');
+          this.setState({
+            errorMessage: 'Bad request! Try reloading the page.',
+          });
+        }
       }
     }
   }
