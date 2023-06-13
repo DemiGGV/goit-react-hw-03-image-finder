@@ -7,8 +7,10 @@
 
 installing styled-components with: 'npm install styled-components@5.3.10'
 
-"modern-normalize":"^2.0.0",
+Libraries in this proj:
 
-"nanoid":"^4.0.2",
-
-"styled-components":"^5.3.10",
+"styled-components":"^5.3.10", "axios": "^1.4.0", "body-scroll-lock":
+"^4.0.0-beta.0", "formik": "^2.4.1", "modern-normalize": "^2.0.0", "nanoid":
+"^4.0.2", "react-loader-spinner": "^5.3.4", "react-modal": "^3.16.1",
+"react-scroll-to-top": "^3.0.0", "react-toastify": "^9.1.3",
+"styled-components": "^5.3.10",
