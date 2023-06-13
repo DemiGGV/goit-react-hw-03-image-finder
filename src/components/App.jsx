@@ -65,15 +65,12 @@ export class App extends Component {
             );
           else
             toast.success(
-              `last ${resp.totalHits - pState.page * PER_PAGE} images`,
+              `${resp.totalHits - pState.page * PER_PAGE} images`,
               toastOpts
             );
         } else {
           this.setState({ visibleBtn: false });
-          toast.warn(
-            `${resp.totalHits - pState.page * PER_PAGE} last images`,
-            toastOpts
-          );
+          toast.warn('last page', toastOpts);
         }
         this.setState(
           prevState => ({
