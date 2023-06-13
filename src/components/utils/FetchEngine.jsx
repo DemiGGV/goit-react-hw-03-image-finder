@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+export const PER_PAGE = 15;
+
 export const fetchGetImgs = async (querry, page, controller) => {
   const BASE_URL = 'https://pixabay.com/api/';
   const params = new URLSearchParams({
@@ -9,7 +11,7 @@ export const fetchGetImgs = async (querry, page, controller) => {
     orientation: 'horizontal',
     safesearch: true,
     page: page,
-    per_page: 15,
+    per_page: PER_PAGE,
   });
   const response = await axios.get(`${BASE_URL}?${params}`, {
     signal: controller.signal,

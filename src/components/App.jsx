@@ -8,7 +8,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Section } from 'components/MainContainerCSS';
 import { Button } from './Button/Button';
-import { fetchGetImgs } from 'components/utils/FetchEngine';
+import { fetchGetImgs, PER_PAGE } from 'components/utils/FetchEngine';
 import { mappingArray } from 'components/utils/imgArrayFormatting';
 import { Modal } from './Modal/Modal';
 
@@ -54,17 +54,26 @@ export class App extends Component {
           toast.warn('There nothing inside!', toastOpts);
           this.setState({ visibleBtn: false });
           return;
-        } else if (page === 1)
-          toast.success(
-            `We found ${resp.totalHits} images for your querry`,
-            toastOpts
-          );
+        }
         const fetchArr = mappingArray(resp.hits);
         if (Number(resp.totalHits) > fetchArr.length + imgArr.length) {
           this.setState({ visibleBtn: true });
+          if (page === 1)
+            toast.success(
+              `We found ${resp.totalHits} images at your request`,
+              toastOpts
+            );
+          else
+            toast.success(
+              `last ${resp.totalHits - pState.page * PER_PAGE} images`,
+              toastOpts
+            );
         } else {
           this.setState({ visibleBtn: false });
-          toast.warn('No more pictures!', toastOpts);
+          toast.warn(
+            `${resp.totalHits - pState.page * PER_PAGE} last images`,
+            toastOpts
+          );
         }
         this.setState(
           prevState => ({
