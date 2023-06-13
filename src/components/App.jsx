@@ -54,7 +54,11 @@ export class App extends Component {
           toast.warn('There nothing inside!', toastOpts);
           this.setState({ visibleBtn: false });
           return;
-        }
+        } else if (page === 1)
+          toast.success(
+            `We found ${resp.totalHits} images for your querry`,
+            toastOpts
+          );
         const fetchArr = mappingArray(resp.hits);
         if (Number(resp.totalHits) > fetchArr.length + imgArr.length) {
           this.setState({ visibleBtn: true });
